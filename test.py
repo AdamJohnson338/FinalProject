@@ -2,7 +2,7 @@ import tkinter as tk
 from tkinter import filedialog
 
 def load_audio_file():
-    file_path = filedialog.askopenfilename(filetypes=[("Audio Files", "*.wav *.mp3 *.ogg")])
+    file_path = filedialog.askopenfilename(filetypes=[("Audio Files", "*.wav *.mp3 *.ogg *.flac")])
     if file_path:
         button.config(text=file_path.split('/')[-1])
 
