@@ -1,21 +1,15 @@
-import matplotlib.pyplot as plt
-import numpy as np
+import tkinter as tk
+from tkinter import filedialog
 
-# Frequency
-frequency = 3
+def load_audio_file():
+    file_path = filedialog.askopenfilename(filetypes=[("Audio Files", "*.wav")])
 
-# The coordinates
-x = np.linspace(0,2 * np.pi, 100)
-y = np.sin(frequency * x)
+root = tk.Tk()
+root.title("Python Interactive Data Acoustic Modeling")
 
+root.geometry("500x300")
 
-# Create the plot
-plt.plot(x,y)
+button = tk.Button(root, text="Open a File", command=load_audio_file)
+button.pack(pady=100)
 
-# Add labels and title
-plt.xlabel('X-axis')
-plt.ylabel('Y-axis')
-plt.title('Sine plot')
-
-# Display the plot
-plt.show()
+root.mainloop()
