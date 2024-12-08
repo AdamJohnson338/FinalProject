@@ -4,7 +4,6 @@ import matplotlib.pyplot as plt
 import numpy as np
 import scipy.io.wavfile as wav
 from scipy.fft import fft
-from pydub import AudioSegment
 import subprocess
 
 
@@ -25,12 +24,12 @@ def calculate_rt60(data, sample_rate):
     if len(rt60_time) > 0:
         rt60 = rt60_time[0] / sample_rate
     else:
-        # No clear RT60 found
-        rt60 = -1
+        rt60 = -1  # No clear RT60 found
     return rt60
 
 
 def process_audio(file_path):
+    # defines correct_file in the correct range
     correct_file = ""
     # Check if the audio file is .wav and converts it into a valid file if it isn't
     if (file_path[(len(file_path) - 3):(len(file_path))] != "wav"):
@@ -40,12 +39,14 @@ def process_audio(file_path):
     else:
         correct_file = file_path
 
-    print(correct_file)
     sample_rate, data = wav.read(correct_file)
 
-    # If audio is stereo, convert to mono
-    if len(data.shape) > 1 and data.shape[1] == 2:
-        data = data.mean(axis=1)
+    # Removes metadata
+    wav.write(correct_file, sample_rate, data)
+
+    # convert to mono
+    if (data.ndim > 1):
+        data = np.mean(data, axis=1, dtype=np.int16)
 
     # Time array
     time = np.arange(0, len(data)) / sample_rate
@@ -104,6 +105,7 @@ def process_audio(file_path):
     rt60_values = [low_rt60, mid_rt60, high_rt60]
     plt.bar(bands, rt60_values, color=['blue', 'green', 'red'])
     plt.title('RT60 for Frequency Bands')
+    plt.xlabel('Frequency Band')
     plt.ylabel('RT60 (seconds)')
     plt.show()
 
