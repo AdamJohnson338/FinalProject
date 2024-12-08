@@ -9,7 +9,7 @@ import subprocess
 
 
 def load_audio_file():
-    file_path = filedialog.askopenfilename(filetypes=[("Audio Files", "*.wav *.mp3")])
+    file_path = filedialog.askopenfilename(filetypes=[("Audio Files", "*.wav *.mp3 *.mp4")])
     if file_path:
         button.config(text=file_path.split('/')[-1])
         process_audio(file_path)
@@ -25,7 +25,8 @@ def calculate_rt60(data, sample_rate):
     if len(rt60_time) > 0:
         rt60 = rt60_time[0] / sample_rate
     else:
-        rt60 = -1  # No clear RT60 found
+        # No clear RT60 found
+        rt60 = -1
     return rt60
 
 
@@ -41,6 +42,10 @@ def process_audio(file_path):
 
     print(correct_file)
     sample_rate, data = wav.read(correct_file)
+
+    # If audio is stereo, convert to mono
+    if len(data.shape) > 1 and data.shape[1] == 2:
+        data = data.mean(axis=1)
 
     # Time array
     time = np.arange(0, len(data)) / sample_rate
